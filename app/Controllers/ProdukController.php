@@ -10,11 +10,14 @@ use Dompdf\Dompdf;
 
 class ProdukController extends BaseController
 {
-    protected $productModel; 
+    
+    protected $model;  
+    private $token;
 
     function __construct()
-    {
-        $this->productModel = new ProductModel();
+    { 
+        $this->model = new ProductModel(); 
+        $this->token = env('MY_API_KEY');
     }
     public function index()
     {
