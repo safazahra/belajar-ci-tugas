@@ -97,8 +97,9 @@
       <tr>
           <td colspan="2"></td>
           <td>Total</td>
-          <td><span id="total"><?= number_to_currency($total, 'IDR') ?></span></td>
-      </tr>
+          <td style="white-space: nowrap;">
+            <span id="total"><?= number_to_currency($total, 'IDR') ?></span>
+          </td>
   </tbody>
 </table>
     </div>
