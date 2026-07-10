@@ -22,7 +22,7 @@ class ProdukController extends BaseController
     public function index()
     {
         return view('produk/index', [
-            'products' => $this->productModel->findAll()
+            'products' => $this->model->findAll()
         ]);
     }
     public function create()
@@ -42,13 +42,13 @@ class ProdukController extends BaseController
             $dataForm['foto'] = $fileName;
         }
 
-        $this->productModel->insert($dataForm);
+        $this->model->insert($dataForm);
 
         return redirect('produk')->with('success', 'Data Berhasil Ditambah');
     } 
     public function edit($id)
     {
-        $dataProduk = $this->productModel->find($id);
+        $dataProduk = $this->model->find($id);
 
         $dataForm = [
             'nama' => $this->request->getPost('nama'),
@@ -71,15 +71,15 @@ class ProdukController extends BaseController
             }
         }
 
-        $this->productModel->update($id, $dataForm);
+        $this->model->update($id, $dataForm);
 
         return redirect('produk')->with('success', 'Data Berhasil Diubah');
     }
 
     public function delete($id)
     {
-        $dataProduk = $this->productModel->find($id);
-        $this->productModel->delete($id);
+        $dataProduk = $this->model->find($id);
+        $this->model->delete($id);
 
         return redirect('produk')->with('success', 'Data Berhasil Dihapus');
     }
@@ -87,7 +87,7 @@ class ProdukController extends BaseController
     public function download()
 {
     // Ambil data produk dari database
-    $products = $this->productModel->findAll();
+    $products = $this->model->findAll();
 
     // Render view menjadi HTML
     $html = view('produk/download_pdf', [

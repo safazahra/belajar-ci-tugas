@@ -64,9 +64,26 @@
       ?>
               <tr>
                   <td><?= $item['name'] ?></td>
-                  <td><?= number_to_currency($item['price'], 'IDR') ?></td>
+                  <td>
+                        <?php if (isset($item['harga_asli'])) : ?>
+
+                            <del style="color:#d9534f;">
+                                <?= number_to_currency($item['harga_asli'], 'IDR') ?>
+                            </del>
+                            <br>
+
+                            <span style="color:#012970;">
+                                <?= number_to_currency($item['price'], 'IDR') ?>
+                            </span>
+
+                        <?php else : ?>
+
+                            <?= number_to_currency($item['price'], 'IDR') ?>
+
+                        <?php endif; ?>
+                    </td>
                   <td><?= $item['qty'] ?></td>
-                  <td><?= number_to_currency($item['price'] * $item['qty'], 'IDR') ?></td>
+                  <td><?= number_to_currency($item['subtotal'], 'IDR') ?></td>
               </tr>
       <?php
           endforeach;

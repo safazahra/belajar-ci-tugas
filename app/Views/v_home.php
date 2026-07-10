@@ -10,6 +10,7 @@ if (session()->getFlashData('success')) {
 <?php
 }
 ?>
+
 <!-- Table with stripped rows -->
 <div class="row">
     <?php foreach ($products as $key => $item) : ?>         
@@ -25,7 +26,37 @@ if (session()->getFlashData('success')) {
                 <div class="card">
                     <div class="card-body">
                         <img src="<?= base_url() . "img/" . $item['foto'] ?>" alt="..." width="50%">
-                        <h5 class="card-title"><?= $item['nama'] ?><br><<?php echo number_to_currency($item['harga'], 'IDR') ?></h5>
+                        
+                            <?php
+                            $hargaAkhir = $item['harga'];
+
+                            if ($discount) {
+                                $hargaAkhir = max(0, $item['harga'] - $discount['nominal']);
+                            }
+                            ?>
+
+                            <h5 class="card-title">
+                            <?= $item['nama'] ?><br>
+
+                            <?php if ($discount) : ?>
+
+                                <del style="color:#dc3545;font-size:15px;font-weight:400;">
+                                    IDR <?= number_format($item['harga'], 0, '.', ',') ?>
+                                </del>
+
+                                <span style="margin-left:5px;color:#012970;font-size:15px;font-weight:500;">
+                                    IDR <?= number_format($hargaAkhir, 0, '.', ',') ?>
+                                </span>
+
+                            <?php else : ?>
+
+                                <span style="color:#012970;font-size:15px;font-weight:400;">
+                                    IDR <?= number_format($item['harga'], 0, '.', ',') ?>
+                                </span>
+
+                            <?php endif; ?>
+                        </h5>
+
                         <button type="submit" class="btn btn-info rounded-pill">Beli</button>
                     </div>
                 </div>

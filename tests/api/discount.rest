@@ -1,0 +1,42 @@
+@token = my-secret-token
+@baseUrl = http://localhost:8080
+
+###
+# GET Semua Diskon
+GET {{baseUrl}}/api/discounts
+Authorization: Bearer {{token}}
+
+###
+
+# GET Diskon Berdasarkan ID
+GET {{baseUrl}}/api/discounts/1
+Authorization: Bearer {{token}}
+
+###
+
+# POST Tambah Diskon
+POST http://localhost:8080/api/discounts
+Authorization: Bearer my-secret-token
+Content-Type: application/json
+
+{
+    "tanggal": "2026-07-25",
+    "nominal": 100000
+}
+
+###
+
+# PUT Ubah Diskon
+PUT {{baseUrl}}/api/discounts/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "nominal": 200000
+}
+
+###
+
+# DELETE Diskon
+DELETE {{baseUrl}}/api/discounts/1
+Authorization: Bearer {{token}}

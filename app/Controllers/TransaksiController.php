@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\DiscountModel;
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Services\RajaOngkirService;
@@ -14,23 +15,50 @@ class TransaksiController extends BaseController
     protected $cart;
     protected $transactionModel;
     protected $transactionDetailModel;
+    protected $discountModel;
 
     public function __construct()
     {
         helper(['number', 'form']);
         $this->cart = service('cart');
         $this->transactionModel = new TransactionModel();
-        $this->transactionDetailModel = new TransactionDetailModel(); 
+        $this->transactionDetailModel = new TransactionDetailModel();
+        $this->discountModel = new DiscountModel(); 
     }
 
     public function index()
 {  
-    $data = [
-        'items' => $this->cart->contents(),
-        'total' => $this->cart->total()
-    ];
+    $discount = $this->discountModel
+    ->where('tanggal', date('Y-m-d'))
+    ->first();
 
-    return view('v_keranjang', $data);
+    $total = 0;
+
+    $items = $this->cart->contents();
+
+    foreach ($items as &$item){
+
+        if($discount){
+
+            $item['harga_asli'] = $item['price'];
+
+            $item['price'] = max(
+                0,
+                $item['price'] - $discount['nominal']
+            );
+        }
+
+        $item['subtotal'] = $item['price'] * $item['qty'];
+
+        $total += $item['subtotal'];
+        }
+
+        $data = [
+            'items'=>$items,
+            'total'=>$total,
+            'discount'=>$discount
+        ];
+        return view('v_keranjang', $data);
 }
 
 public function cart_add()
@@ -96,11 +124,30 @@ public function cart_add()
     return redirect()->to(base_url('keranjang'));
 }
 
-    public function checkout()
-    {  
+   public function checkout()
+    {
+        $discount = $this->discountModel
+            ->where('tanggal', date('Y-m-d'))
+            ->first();
+
+        $items = $this->cart->contents();
+        $total = 0;
+
+        foreach ($items as &$item) {
+
+            if ($discount) {
+                $item['harga_asli'] = $item['price'];
+                $item['price'] = max(0, $item['price'] - $discount['nominal']);
+            }
+
+            $item['subtotal'] = $item['price'] * $item['qty'];
+            $total += $item['subtotal'];
+        }
+
         $data = [
-            'items' => $this->cart->contents(),
-            'total' => $this->cart->total(),
+            'items'    => $items,
+            'total'    => $total,
+            'discount' => $discount
         ];
 
         return view('v_checkout', $data);
@@ -135,7 +182,7 @@ public function cart_add()
     }
 
     public function buy()
-{ 
+    {
     $cartItems = $this->cart->contents();
 
     if (empty($cartItems)) {
@@ -143,10 +190,20 @@ public function cart_add()
     }
 
     $db = \Config\Database::connect();
-    $db->transStart(); 
+    $db->transStart();
+
+    $discount = $this->discountModel
+        ->where('tanggal', date('Y-m-d'))
+        ->first();
 
     $subtotal = 0;
-    foreach ($cartItems as $item) {
+
+    foreach ($cartItems as &$item) {
+
+        if ($discount) {
+            $item['price'] = max(0, $item['price'] - $discount['nominal']);
+        }
+
         $subtotal += $item['qty'] * $item['price'];
     }
 
@@ -174,8 +231,8 @@ public function cart_add()
             'transaction_id' => $transactionId,
             'product_id'     => $item['id'],
             'jumlah'         => $item['qty'],
-            'diskon'         => 0,
-            'subtotal_harga' => $item['qty'] * $item['price'] 
+            'diskon' => $discount ? $discount['nominal'] : 0,
+        'subtotal_harga' => $item['qty'] * $item['price']
         ]);
     }
 

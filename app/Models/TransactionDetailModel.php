@@ -54,7 +54,11 @@ class TransactionDetailModel extends Model
             return [];
         }
 
-        $details = $this->select('transaction_detail.*, product.nama, product.harga, product.foto')
+        $details = $this->select('transaction_detail.*,
+                                  product.nama,
+                                  product.foto,
+                                  (product.harga - transaction_detail.diskon) AS harga
+                                ')
             ->join('product', 'transaction_detail.product_id = product.id')
             ->whereIn('transaction_id', $transactionIds)
             ->findAll();

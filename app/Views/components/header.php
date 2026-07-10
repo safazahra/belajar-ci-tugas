@@ -1,3 +1,13 @@
+  <?php
+
+$discountModel = new \App\Models\DiscountModel();
+
+$discount = $discountModel
+    ->where('tanggal', date('Y-m-d'))
+    ->first();
+
+?>
+  
   <!-- ======= Header ======= -->
   <header id="header" class="header fixed-top d-flex align-items-center">
 
@@ -9,12 +19,25 @@
       <i class="bi bi-list toggle-sidebar-btn"></i>
     </div><!-- End Logo -->
 
-    <div class="search-bar">
+    <div class="search-bar" style="width:220px;">
       <form class="search-form d-flex align-items-center" method="POST" action="#">
         <input type="text" name="query" placeholder="Search" title="Enter search keyword">
         <button type="submit" title="Search"><i class="bi bi-search"></i></button>
       </form>
     </div><!-- End Search Bar -->
+
+    <?php if ($discount) : ?>
+    <div class="ms-3">
+        <span class="badge bg-success"
+              style="
+                  font-size:12px;
+                  padding:6px 12px;
+                  border-radius:4px;
+                  font-weight:500;">
+            Hari ini ada diskon IDR <?= number_format($discount['nominal'],0,',','.') ?> per item
+        </span>
+    </div>
+    <?php endif; ?>
 
     <nav class="header-nav ms-auto">
       <ul class="d-flex align-items-center">

@@ -20,14 +20,30 @@
         if (session()->get('role') == 'admin') {
         ?>
         <li class="nav-item">
-            <a class="nav-link <?php echo (uri_string() == 'produk') ? "" : "collapsed" ?>" href="produk">
+            <a class="nav-link <?php echo (uri_string() == 'produk') ? "" : "collapsed" ?>" href="<?= base_url('produk') ?>">
                 <i class="bi bi-receipt"></i>
                 <span>Produk</span>
             </a>
-            </li><!-- End Produk Nav -->
+        </li><!-- End Produk Nav -->
+
+        <li class="nav-item">
+            <a class="nav-link <?php echo (uri_string() == 'diskon') ? "" : "collapsed" ?>" href="<?= base_url('diskon') ?>">
+                <i class="bi bi-percent"></i>
+                <span>Diskon</span>
+            </a>
+        </li><!-- End Diskon Nav -->
+
         <?php
         }
-        ?> 
+        ?>
+
+        <li class="nav-item">
+            <a class="nav-link <?php echo (uri_string() == 'pembelian') ? "" : "collapsed" ?>" href="<?= base_url('pembelian') ?>">
+                <i class="bi bi-bag-check"></i>
+                <span>Pembelian</span>
+            </a>
+        </li><!-- End Pembelian Nav -->
+
         <li class="nav-item">
     <a class="nav-link <?php echo (uri_string() == 'history') ? "" : "collapsed" ?>" href="history">
         <i class="bi bi-person"></i>
